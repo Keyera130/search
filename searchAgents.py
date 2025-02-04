@@ -34,6 +34,7 @@ description for details.
 Good luck and happy searching!
 """
 
+import itertools
 from typing import List, Tuple, Any
 from game import Directions
 from game import Agent
@@ -483,11 +484,27 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
         return 0
     
     # Find the minimum Manhattan distance to the closest food
-    distances = [util.manhattanDistance(position, food) for food in foodList]
+    distances = [ mazeDistance(position, food, problem.startingGameState) for food in foodList]
     
+    if len(foodList) == 1:
+        return distances[0]
+    
+    mst_cost = 0
+    connected = {foodList[0]}
+    unconnected = set(foodList[1:])
+    
+    while unconnected:
+        # Find the shortest connection between connected and unconnected nodes
+        min_edge = min(
+            (mazeDistance(node1, node2, problem.startingGameState), node1, node2)
+            for node1, node2 in itertools.product(connected, unconnected)
+        )
+        _, _, next_food = min_edge
+        connected.add(next_food)
+        unconnected.remove(next_food)
+        mst_cost += min_edge[0]
 
-    # Return the minimum distances to the closest food
-    return max(distances)
+    return min(distances) + mst_cost
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
