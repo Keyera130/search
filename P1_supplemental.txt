@@ -1,28 +1,112 @@
 Answer questions marked as "QS"
 
 QS1.1:
-
+For implementing Depth-First Search (DFS), I use a stack data structure. 
+The stack follows a Last In, First Out (LIFO) approach, meaning that the 
+most recently visited state is explored first. This makes sense for DFS 
+because the algorithm explores as deeply as possible along each branch 
+before backtracking, and the stack helps maintain this exploration 
+order efficiently.
 
 QS1.2:
-
+The exploration order in DFS follows the expected behavior, with Pacman 
+exploring deeply into the maze before backtracking. The path shown on 
+the board indicates that Pacman may revisit squares multiple times, 
+especially if there are multiple branches or loops in the maze. Pacman 
+will explore all reachable squares as part of the search process, but 
+not all of them may be on the optimal path to the goal. DFS doesn't 
+necessarily find the shortest path, so some squares may be visited 
+multiple times.
 
 QS2.1:
-
+For implementing Breadth-First Search (BFS), I use a queue data structure.
+ The queue follows a First In, First Out (FIFO) approach, meaning that 
+ the oldest state is explored first. This is ideal for BFS because it 
+ guarantees that we explore all the nodes at one level of depth before 
+ moving on to the next level, ensuring that the shortest path to the 
+ goal is found.
 
 QS3.1:
-
+I implemented a basic cost function that considers the step cost for 
+moving from one state to another. The cost is uniform across the maze, 
+meaning that each step (whether moving North, South, East, or West) 
+has a cost of 1. The cost function is simple and doesn't account for 
+additional factors like food, walls, or specific obstacles. This 
+simplicity makes it a good fit for a uniform search problem like the
+ PositionSearchProblem.
 
 
 QS4.1:
+The nullHeuristic always returns 0, meaning it doesn’t provide any 
+additional information about the problem. It doesn't help guide the 
+search, so the algorithm essentially performs as a uniform-cost search 
+(UCS). Manhattan distance, on the other hand, calculates the straight-line 
+distance between Pacman’s current position and the goal, accounting for 
+the grid's structure and obstacles. The Manhattan distance is a better 
+heuristic because it’s admissible (never overestimates the true cost) 
+and consistent, guiding the search in the right direction towards the 
+goal, which results in fewer nodes expanded and faster solutions. The 
+nullHeuristic does not give an optimal solution since it doesn't guide 
+the search, making it less efficient.
 
+
+
+QS4.2:
+DFS: Explores as deeply as possible, often expanding a large number of 
+nodes even when it doesn’t reach the goal efficiently.
+BFS: Explores level by level, guaranteeing the shortest path but potentially 
+expanding a large number of nodes when the maze is large.
+A (with Manhattan heuristic)**: Uses the heuristic to guide the search more 
+efficiently, reducing the number of expanded nodes compared to BFS while 
+ensuring the optimal path. The A strategy performs the best by focusing the 
+search towards the goal while expanding fewer nodes than BFS.
 
 QS5.1:
+For the CornersProblem, I represent each state as a tuple consisting of 
+Pacman’s current position and a frozenset of visited corners. The frozenset 
+efficiently tracks which corners have been visited, and using a tuple allows 
+the search algorithm to easily work with these states.
 
 
 QS5.2:
-
+In the CornersProblem, I implemented the state representation by tracking 
+the current position of Pacman and the visited corners using a frozenset. 
+The goal is to visit all four corners. The getSuccessors method generates 
+new states by moving Pacman in the allowed directions and updating the 
+visited corners list (if a new corner is reached). The isGoalState method 
+checks if all corners have been visited. Using a frozenset ensures that 
+the visited corners are stored efficiently and can be compared quickly.
 
 QS6.1:
-
+For the CornersProblem, I used the Manhattan distance from Pacman’s current 
+position to the farthest unvisited corner. This heuristic has several advantages,
+its consistent because it respects the triangle inequality and its admissible because
+it doesn't overestimate the cost to the goal. The weak points is that it doesn't account
+for walls or obstacles, which may lead to overestimating the true cost and it 
+doesn’t always reflect the best sequence of corners to visit, as it focuses on the 
+farthest one. Overall, the heuristic is consistent because it does not violate the 
+triangle inequality, ensuring the A* algorithm will work correctly.
 
 QS7.1:
+For the FoodSearchProblem, I used a Manhattan distance heuristic that calculates 
+the distance to the farthest food item. This heuristic is simple and effective, It 
+provides a reasonable estimate of the remaining distance, guiding the search 
+effectively. It is admissible and consistent because it never overestimates the 
+true cost.
+The weak points are that it does not consider obstacles or walls, which can lead 
+to overestimation if Pacman must navigate around them.
+It only considers the farthest food item, which might not always reflect the 
+best path. The heuristic is consistent because it satisfies the triangle 
+inequality (i.e., the estimated cost to the goal is never greater than the true cost).
+
+
+QS8.1 
+My solution to the FoodSearchProblem uses A* with the Manhattan distance heuristic. 
+This allows Pacman to efficiently find the shortest path to collect all the food.
+Strong points:
+A* guarantees optimality while the heuristic guides the search, reducing the number 
+of nodes expanded. The Manhattan distance heuristic is simple and efficient for grid-based mazes.
+Weak points:
+The heuristic doesn’t take into account walls and obstacles, which can result in 
+overestimations. For complex mazes, the heuristic may not always produce the most 
+efficient path, but it performs well in most cases.

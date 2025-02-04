@@ -296,7 +296,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return(self.startingPosition, set())
+        return(self.startingPosition, frozenset())
 
     def isGoalState(self, state: Any):
         """
@@ -317,7 +317,8 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
-        
+        currentPosition = state[0]
+        visitedCorners = state[1]
         
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
@@ -328,18 +329,18 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            x, y = state[0]
+            x, y = currentPosition
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             
             if not self.walls[nextx][nexty]:
                 nextPosition = (nextx, nexty)
                 
-                newVisitedCorners = state[1].copy()
+                newVisitedCorners = visitedCorners.copy()
                 if nextPosition in self.corners:
-                    newVisitedCorners.add(nextPosition)
+                    newVisitedCorners = newVisitedCorners.union([nextPosition])
                     
-                successors.append(((nextPosition, newVisitedCorners), action, 1))
+                successors.append(((nextPosition, frozenset(newVisitedCorners)), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -474,7 +475,6 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    position, foodGrid = state
     
     # Get the list of food coordintaed from the grid
     foodList = foodGrid.asList()
@@ -485,8 +485,9 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     # Find the minimum Manhattan distance to the closest food
     distances = [util.manhattanDistance(position, food) for food in foodList]
     
+
     # Return the minimum distances to the closest food
-    return min(distances)
+    return max(distances)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
